@@ -57,5 +57,21 @@ def prep():
     return jsonify(dict_data)
 
 
+@app.route("/api/v1.0/stations")
+def stations():
+    print("Server receieved a request for precipitation page")
+
+    # Query the stations
+    list_stations = session.query(Station.station).all()
+    
+    #convert the query to a list
+    test = list(np.ravel(list_stations))
+
+    session.close()
+    
+    # Return a JSON list of stations from the dataset.
+    return jsonify(test)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
