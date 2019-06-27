@@ -74,7 +74,7 @@ def stations():
 def date_and_temp():
     print("Server receieved a request for dates and temp page")
 
-# Calculate the date 1 year ago from the last data point in the database
+    # Calculate the date 1 year ago from the last data point in the database
     last_12_months = dt.date(2017, 8, 23) - dt.timedelta(days=365)
 
     # Perform a query to retrieve the data and precipitation scores
@@ -86,6 +86,13 @@ def date_and_temp():
     session.close()
 
     return jsonify(dict_date_temp)
+
+@app.route("/api/v1.0/start")
+def start_temp():
+    print("Server receieved a request for start temp page")
+
+
+
 
 
 if __name__ == "__main__":
