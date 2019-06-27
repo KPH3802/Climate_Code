@@ -43,11 +43,9 @@ def prep():
     print("Server receieved a request for precipitation page")
 
 
-    # Calculate the date 1 year ago from the last data point in the database
-    last_12_months = dt.date(2017, 8, 23) - dt.timedelta(days=365)
 
     # Perform a query to retrieve the data and precipitation scores
-    data = session.query(Measurement.date, Measurement.prcp).filter(Measurement.date > last_12_months).all()
+    data = session.query(Measurement.date, Measurement.prcp).all()
     
     #  * Convert the query results to a Dictionary using `date` as the key and `prcp` as the value.
     dict_data = dict(data)
@@ -59,7 +57,7 @@ def prep():
 
 @app.route("/api/v1.0/stations")
 def stations():
-    print("Server receieved a request for precipitation page")
+    print("Server receieved a request for stations page")
 
     # Query the stations
     list_stations = session.query(Station.station).all()
@@ -71,6 +69,23 @@ def stations():
     
     # Return a JSON list of stations from the dataset.
     return jsonify(test)
+
+@app.route("/api/v1.0/tobs")
+def date_and_temp():
+    print("Server receieved a request for dates and temp page")
+
+# Calculate the date 1 year ago from the last data point in the database
+    last_12_months = dt.date(2017, 8, 23) - dt.timedelta(days=365)
+
+    # Perform a query to retrieve the data and precipitation scores
+    date_temp = session.query(Measurement.date, Measurement.tobs).filter(Measurement.date > last_12_months).all()
+    
+    #  * Convert the query results to a Dictionary using `date` as the key and `prcp` as the value.
+    dict_date_temp = dict(date_temp)
+    
+    session.close()
+
+    return jsonify(dict_date_temp)
 
 
 if __name__ == "__main__":
