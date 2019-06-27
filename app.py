@@ -87,13 +87,37 @@ def date_and_temp():
 
     return jsonify(dict_date_temp)
 
-@app.route("/api/v1.0/start")
-def start_temp():
+@app.route("/api/v1.0/<start>")
+def start_temp(start):
     print("Server receieved a request for start temp page")
+    
+    #Query using given start date
+    start_mx_mn_av_temp = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+        filter(func.strftime("%m-%d", Measurement.date) >= start).all()
 
+    #Convert results to a dictionary
+    dict_start = dict(start_mx_mn_av_temp)
 
+    #return results
+    return jsonify(dict_start)
 
+    #Close session
+    session.close()
 
+@app.route("/api/v1.0/<start>/<end>")
+def start_end_temp(start, end):
+    print("Server receieved a request for start and end temp page")
+
+    #Query using given start date
+    start_end = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+        filter(Measurement.date >= start).filter(Measurement.date <= end).all()
+
+    #Convert results to a dictionary
+    dict_start_end = dict(start_end)
+    return jsonify(dict_start_end)
+
+    #Close session
+    session.close()
 
 if __name__ == "__main__":
     app.run(debug=True)
