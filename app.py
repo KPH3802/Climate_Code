@@ -90,19 +90,23 @@ def date_and_temp():
 @app.route("/api/v1.0/<start>")
 def start_temp(start):
     print("Server receieved a request for start temp page")
-    
+
     #Query using given start date
     start_mx_mn_av_temp = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-        filter(func.strftime("%m-%d", Measurement.date) >= start).all()
-
+        filter( Measurement.date >= start).all()
+    #return list(np.ravel(start_mx_mn_av_temp))
     #Convert results to a dictionary
-    dict_start = dict(start_mx_mn_av_temp)
-
-    #return results
+    dict_start = list(np.ravel(start_mx_mn_av_temp))
+    #dict_start = dict(start_mx_mn_av_temp)
+    
     return jsonify(dict_start)
+    #return results
+    #return jsonify(dict_start)
 
     #Close session
     session.close()
+
+    
 
 @app.route("/api/v1.0/<start>/<end>")
 def start_end_temp(start, end):
@@ -113,7 +117,9 @@ def start_end_temp(start, end):
         filter(Measurement.date >= start).filter(Measurement.date <= end).all()
 
     #Convert results to a dictionary
-    dict_start_end = dict(start_end)
+    dict_start_end = list(np.ravel(start_end))
+    
+
     return jsonify(dict_start_end)
 
     #Close session
